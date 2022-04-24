@@ -28,7 +28,7 @@ namespace Amount_Loan_App
             services.AddControllersWithViews();
 
             var connectionString = Configuration.GetConnectionString("LoanDb");
-            services.AddDbContextPool<LoanDbContext>(options => options.UseSqlServer(connectionString)); 
+            services.AddDbContextPool<LoanDbContext>(options => options.UseSqlServer(connectionString));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

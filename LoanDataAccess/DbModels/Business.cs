@@ -14,5 +14,8 @@ namespace LoanDataAccess.DbModels
         public string State { get; set; }
         public byte? ZipCode { get; set; }
         public string Country { get; set; }
+        public int? ApplicantId { get; set; }
+
+        public virtual Demographic Applicant { get; set; }
     }
 }

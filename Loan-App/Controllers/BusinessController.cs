@@ -9,22 +9,23 @@ using LoanDataAccess.DbModels;
 
 namespace Amount_Loan_App.Controllers
 {
-    public class BusinessesController : Controller
+    public class BusinessController : Controller
     {
         private readonly LoanDbContext _context;
 
-        public BusinessesController(LoanDbContext context)
+        public BusinessController(LoanDbContext context)
         {
             _context = context;
         }
 
-        // GET: Businesses
+        // GET: Business
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Businesses.ToListAsync());
+            var loanDbContext = _context.Businesses.Include(b => b.Applicant);
+            return View(await loanDbContext.ToListAsync());
         }
 
-        // GET: Businesses/Details/5
+        // GET: Business/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -33,6 +34,7 @@ namespace Amount_Loan_App.Controllers
             }
 
             var business = await _context.Businesses
+                .Include(b => b.Applicant)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (business == null)
             {
@@ -42,18 +44,18 @@ namespace Amount_Loan_App.Controllers
             return View(business);
         }
 
-        // GET: Businesses/Create
+        // GET: Business/Create
         public IActionResult Create()
         {
+            ViewData["ApplicantId"] = new SelectList(_context.Demographics, "Id", "FirstName");
             return View();
         }
 
-        // POST: Businesses/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: Business/Create
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,BusinessName,Address,City,State,ZipCode,Country")] Business business)
+        public async Task<IActionResult> Create([Bind("Id,BusinessName,Address,City,State,ZipCode,Country,ApplicantId")] Business business)
         {
             if (ModelState.IsValid)
             {
@@ -61,10 +63,11 @@ namespace Amount_Loan_App.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["ApplicantId"] = new SelectList(_context.Demographics, "Id", "FirstName", business.ApplicantId);
             return View(business);
         }
 
-        // GET: Businesses/Edit/5
+        // GET: Business/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -77,15 +80,16 @@ namespace Amount_Loan_App.Controllers
             {
                 return NotFound();
             }
+            ViewData["ApplicantId"] = new SelectList(_context.Demographics, "Id", "FirstName", business.ApplicantId);
             return View(business);
         }
 
-        // POST: Businesses/Edit/5
+        // POST: Business/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,BusinessName,Address,City,State,ZipCode,Country")] Business business)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,BusinessName,Address,City,State,ZipCode,Country,ApplicantId")] Business business)
         {
             if (id != business.Id)
             {
@@ -112,10 +116,11 @@ namespace Amount_Loan_App.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["ApplicantId"] = new SelectList(_context.Demographics, "Id", "FirstName", business.ApplicantId);
             return View(business);
         }
 
-        // GET: Businesses/Delete/5
+        // GET: Business/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -124,6 +129,7 @@ namespace Amount_Loan_App.Controllers
             }
 
             var business = await _context.Businesses
+                .Include(b => b.Applicant)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (business == null)
             {
@@ -133,7 +139,7 @@ namespace Amount_Loan_App.Controllers
             return View(business);
         }
 
-        // POST: Businesses/Delete/5
+        // POST: Business/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

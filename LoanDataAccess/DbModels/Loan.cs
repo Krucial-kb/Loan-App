@@ -15,5 +15,8 @@ namespace LoanDataAccess.DbModels
         public int? LatePayments { get; set; }
         public int? TotalDebt { get; set; }
         public decimal? RiskRating { get; set; }
+        public int? ApplicantId { get; set; }
+
+        public virtual Demographic IdNavigation { get; set; }
     }
 }

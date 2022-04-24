@@ -21,7 +21,8 @@ namespace Amount_Loan_App.Controllers
         // GET: Loans
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Loans.ToListAsync());
+            var loanDbContext = _context.Loans.Include(l => l.IdNavigation);
+            return View(await loanDbContext.ToListAsync());
         }
 
         // GET: Loans/Details/5
@@ -33,6 +34,7 @@ namespace Amount_Loan_App.Controllers
             }
 
             var loan = await _context.Loans
+                .Include(l => l.IdNavigation)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (loan == null)
             {
@@ -45,6 +47,7 @@ namespace Amount_Loan_App.Controllers
         // GET: Loans/Create
         public IActionResult Create()
         {
+            ViewData["Id"] = new SelectList(_context.Demographics, "Id", "FirstName");
             return View();
         }
 
@@ -53,7 +56,7 @@ namespace Amount_Loan_App.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,RequestedAmount,PaybackTime,Apr,CreditScore,LatePayments,TotalDebt,RiskRating")] Loan loan)
+        public async Task<IActionResult> Create([Bind("Id,RequestedAmount,PaybackTime,Apr,CreditScore,LatePayments,TotalDebt,RiskRating,ApplicantId")] Loan loan)
         {
             if (ModelState.IsValid)
             {
@@ -61,6 +64,7 @@ namespace Amount_Loan_App.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["Id"] = new SelectList(_context.Demographics, "Id", "FirstName", loan.Id);
             return View(loan);
         }
 
@@ -77,6 +81,7 @@ namespace Amount_Loan_App.Controllers
             {
                 return NotFound();
             }
+            ViewData["Id"] = new SelectList(_context.Demographics, "Id", "FirstName", loan.Id);
             return View(loan);
         }
 
@@ -85,7 +90,7 @@ namespace Amount_Loan_App.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,RequestedAmount,PaybackTime,Apr,CreditScore,LatePayments,TotalDebt,RiskRating")] Loan loan)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,RequestedAmount,PaybackTime,Apr,CreditScore,LatePayments,TotalDebt,RiskRating,ApplicantId")] Loan loan)
         {
             if (id != loan.Id)
             {
@@ -112,6 +117,7 @@ namespace Amount_Loan_App.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["Id"] = new SelectList(_context.Demographics, "Id", "FirstName", loan.Id);
             return View(loan);
         }
 
@@ -124,6 +130,7 @@ namespace Amount_Loan_App.Controllers
             }
 
             var loan = await _context.Loans
+                .Include(l => l.IdNavigation)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (loan == null)
             {

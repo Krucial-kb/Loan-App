@@ -54,6 +54,11 @@ namespace LoanDataAccess.DbModels
                 entity.Property(e => e.State)
                     .HasMaxLength(255)
                     .IsUnicode(false);
+
+                entity.HasOne(d => d.Applicant)
+                    .WithMany(p => p.Businesses)
+                    .HasForeignKey(d => d.ApplicantId)
+                    .HasConstraintName("FK_Business_Demographic");
             });
 
             modelBuilder.Entity<Demographic>(entity =>
@@ -83,6 +88,8 @@ namespace LoanDataAccess.DbModels
             {
                 entity.ToTable("Loan");
 
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
+
                 entity.Property(e => e.Apr)
                     .HasColumnType("decimal(18, 0)")
                     .HasColumnName("APR");
@@ -90,6 +97,12 @@ namespace LoanDataAccess.DbModels
                 entity.Property(e => e.RequestedAmount).HasColumnType("money");
 
                 entity.Property(e => e.RiskRating).HasColumnType("decimal(18, 0)");
+
+                entity.HasOne(d => d.IdNavigation)
+                    .WithOne(p => p.Loan)
+                    .HasForeignKey<Loan>(d => d.Id)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Loan_Demographic");
             });
 
             OnModelCreatingPartial(modelBuilder);
