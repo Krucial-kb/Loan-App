@@ -4,13 +4,10 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 #nullable disable
 
-namespace LoanDomain.DbModels
+namespace LoanDataAccess.DbModels
 {
     public partial class LoanDbContext : DbContext
     {
-        public LoanDbContext()
-        {
-        }
 
         public LoanDbContext(DbContextOptions<LoanDbContext> options)
             : base(options)
@@ -32,6 +29,8 @@ namespace LoanDomain.DbModels
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.HasAnnotation("Relational:Collation", "SQL_Latin1_General_CP1_CI_AS");
+
             modelBuilder.Entity<Business>(entity =>
             {
                 entity.ToTable("Business");

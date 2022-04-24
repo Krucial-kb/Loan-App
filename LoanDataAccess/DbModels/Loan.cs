@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 #nullable disable
 
-namespace LoanDomain.DbModels
+namespace LoanDataAccess.DbModels
 {
     public partial class Loan
     {
