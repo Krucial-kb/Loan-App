@@ -12,7 +12,7 @@ namespace LoanDomain.Interfaces
         //Get All (Show All Records)
         Task<IEnumerable<DemographicDomain>> GetAllAsync();
         //Find By Id (Search)
-        Task<DemographicDomain> GetByIdAsync(int _demoApplicantid);
+        Task<DemographicDomain> GetByIdAsync(string _demoApplicantName);
         //POST Call (Create)
         void PostUserAsync(DemographicDomain _demoApplicant);
         //PUT Call (Update)
